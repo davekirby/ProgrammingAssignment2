@@ -22,14 +22,24 @@ makeCacheMatrix <- function(x = matrix()) {
 ## matrix will return the pre-computed value.
 
 cacheSolve <- function(x, ...) {
-    ## Return a matrix that is the inverse of 'x'
+    ## Return a matrix that is the inverse of 'x' or solve a set of linear
+    ## equations
+
+    # If other parameters have been passed then the caller may be solving
+    # linear equations, so don't use the cache since the result will
+    # depend on the other arguments
+    args  <- list(...)
+    if (length(args) != 0){
+        return(solve(x$get(), ...))
+    }
+
     inv <- x$getinv()
     if(!is.null(inv)) {
-        message("getting cached data")
+        # message("getting cached data")
         return(inv)
     }
     data <- x$get()
-    inv <- solve(data, ...)
+    inv <- solve(data)
     x$setinv(inv)
     inv
 }
